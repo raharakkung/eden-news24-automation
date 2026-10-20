@@ -32,7 +32,7 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
-          POSTS_PER_DAY: "2"
+          POSTS_PER_DAY: "20"
         run: python publish_to_blogger.py
 
       - name: Commit updated topic history
