@@ -1,0 +1,7 @@
+client_secret*.json
+.env
+__pycache__/
+*.pyc
+.venv/
+.claude/
+rahanews-logo.png
