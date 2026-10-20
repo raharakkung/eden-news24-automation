@@ -95,11 +95,14 @@ def resolve_category(labels, site):
 def _image_tag(image_url, alt):
     """image_url: 외부 이미지 URL(예: Pollinations.ai). base64로 본문에 직접 삽입하면
     글 용량이 커져 Blogger의 다중 게시물 페이지(홈/검색)에서 응답 크기 제한에 걸려
-    글이 잘려나가는 문제가 있어(2026-10-17 확인), 반드시 외부 URL 참조 방식을 사용한다."""
+    글이 잘려나가는 문제가 있어(2026-10-17 확인), 반드시 외부 URL 참조 방식을 사용한다.
+    alt 텍스트는 "{키워드} / 사진=출처" 형태라고 가정하고, 그대로 이미지 아래 작은
+    캡션으로도 노출한다(국내 뉴스 매체의 사진 캡션 관행을 따름)."""
     safe_alt = alt.replace('"', "'")
     return (
         f'<img src="{image_url}" alt="{safe_alt}" '
-        'style="max-width:100%;height:auto;border-radius:8px;margin:16px 0;" loading="lazy"/>'
+        'style="max-width:100%;height:auto;border-radius:8px;margin:16px 0 4px 0;" loading="lazy"/>'
+        f'<p style="font-size:12px;color:#888;margin:0 0 16px 0;">{safe_alt}</p>'
     )
 
 

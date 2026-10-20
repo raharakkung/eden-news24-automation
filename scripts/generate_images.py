@@ -14,66 +14,62 @@ POLLINATIONS_BASE = "https://image.pollinations.ai/prompt/"
 
 # 카테고리별 범용 이미지 프롬프트(영문). 특정 글의 정확한 내용 대신
 # 카테고리 분위기에 맞는 편집 사진 스타일 이미지를 생성한다.
+# 실존 인물 초상권/명예훼손 리스크를 피하기 위해 모든 프롬프트에 "no real celebrity,
+# generic anonymous person, no identifiable face"를 포함해 특정인을 닮은 얼굴이
+# 생성되지 않도록 한다.
 CATEGORY_PROMPTS = {
-    "생활정보": [
-        "clean bright modern home interior, cleaning supplies, lifestyle photography, no text, no people",
-        "close-up of household cleaning tools, soft natural light, editorial photography style, no text",
+    "이슈": [
+        "trendy Korean cafe with young people chatting, lifestyle photography, no identifiable face, no text",
+        "smartphone showing a blurred social media app, trending topic concept, no text, no logos",
+        "crowded Seoul street with shopping bags, lifestyle photography, no identifiable face, no text",
+        "close-up of a trendy product on a minimal background, editorial photography, no text, no logos",
+        "person scrolling on a phone at a cafe table, generic anonymous person, no identifiable face, no text",
+    ],
+    "연예": [
+        "concert stage with colorful lights, no identifiable face, no real celebrity, no text, no logos",
+        "fans holding lightsticks at a concert, silhouettes only, no identifiable face, no text",
+        "modern TV studio set with bright lights, no identifiable face, no text, no logos",
+        "vinyl records and headphones on a table, music lifestyle photography, no text",
+        "theater or cinema seats in dim lighting, no identifiable face, no text",
+    ],
+    "스포츠": [
+        "empty modern stadium with bright lights, sports photography, no identifiable face, no text",
+        "running shoes and a track field, sports lifestyle photography, no identifiable face, no text",
+        "soccer ball on a green pitch, bright daylight, no identifiable face, no text, no logos",
+        "gym equipment in a bright modern fitness center, no identifiable face, no text, no logos",
+        "person stretching before a run outdoors, generic anonymous person, no identifiable face, no text",
+    ],
+    "라이프": [
         "cozy Korean apartment living room, tidy and organized, bright daylight, no text",
-        "hands using a cleaning spray in a kitchen, lifestyle photo, no faces, no text",
-        "fresh clean bathroom with white tiles, bright natural light, no text",
+        "hands using a cleaning spray in a kitchen, lifestyle photo, no identifiable face, no text",
+        "home cafe setup with coffee and pastries, bright natural light, no text, no logos",
+        "neatly organized closet with folded clothes, clean lifestyle photography, no text",
+        "cozy bedroom with soft morning light, peaceful lifestyle concept, no text",
     ],
-    "IT/디지털": [
-        "modern smartphone on a wooden desk, soft lighting, tech lifestyle photography, no text",
-        "laptop computer on a desk in a cozy home office, no text, no logos",
-        "close-up of hands typing on a laptop keyboard, warm lighting, no text",
-        "wifi router and tech gadgets on a desk, clean minimal style, no text",
-        "modern desk setup with monitor and smartphone, tech lifestyle, no faces, no text",
-    ],
-    "건강": [
-        "person stretching in a bright living room, healthy lifestyle photography, no face, no text",
-        "bowl of healthy fresh food on a wooden table, bright natural light, no text",
-        "cozy bedroom with soft morning light, peaceful sleep concept, no text",
-        "glass of water and vitamins on a table, clean minimal health concept, no text",
-        "yoga mat and stretching scene in a bright room, wellness lifestyle, no face, no text",
-    ],
-    "금융/정부지원": [
+    "유용한정보": [
         "modern government office building exterior, bright daylight, no text",
         "calculator and documents on a desk, finance concept, clean editorial photography, no text",
         "stack of paperwork and a pen on a wooden desk, bright natural light, no text",
         "piggy bank and coins on a table, savings concept, clean minimal style, no text",
-        "hands holding a smartphone with a blurred banking app, finance lifestyle, no text",
+        "hands holding a smartphone with a blurred banking app, no identifiable face, no text",
     ],
-    "법률/행정": [
+    "유용한법률": [
         "stack of official documents and a pen on a desk, clean editorial style, no text",
         "modern courthouse building exterior, bright daylight, no text",
-        "hands signing a document, close-up, warm natural light, no faces, no text",
+        "hands signing a document, close-up, warm natural light, no identifiable face, no text",
         "folder of paperwork on an office desk, clean minimal style, no text",
         "gavel and law books on a wooden desk, soft lighting, no text",
     ],
-    "자동차": [
-        "modern car dashboard interior, clean photography, no text, no logos",
-        "close-up of a car tire and wheel, bright daylight, editorial photography, no text",
-        "car engine bay, clean detailed photography, no text, no logos",
-        "hands holding car keys next to a parked car, bright daylight, no faces, no text",
-        "car parked in a clean modern garage, soft lighting, no text, no logos",
-    ],
-    "쇼핑/생활꿀팁": [
-        "cardboard delivery boxes stacked at a front door, bright daylight, no text, no logos",
-        "hands holding a smartphone with a blurred shopping app, lifestyle photo, no text",
-        "neatly wrapped packages on a table, clean lifestyle photography, no text, no logos",
-        "credit card and shopping bags on a table, clean minimal style, no text, no logos",
-        "cozy living room with a delivery package on the floor, bright natural light, no text",
-    ],
-    "교육/취업": [
-        "laptop and notebook on a desk, study concept, bright natural light, no text",
-        "resume papers and a pen on a wooden desk, clean editorial photography, no text",
-        "modern office meeting room, bright daylight, no people, no text",
-        "stack of books and a coffee cup on a desk, study lifestyle photography, no text",
-        "hands writing notes in a notebook, warm natural light, no face, no text",
+    "동물뉴스": [
+        "cute fluffy dog sitting in a bright living room, pet photography, no text, no logos",
+        "curious cat looking out a window, soft natural light, pet photography, no text",
+        "dog and owner walking in a park, generic anonymous person, no identifiable face, no text",
+        "cozy pet bed with a sleeping cat, warm lighting, no text, no logos",
+        "veterinary clinic exterior or pet supplies on a table, clean editorial style, no text",
     ],
 }
 
-DEFAULT_PROMPTS = CATEGORY_PROMPTS["생활정보"]
+DEFAULT_PROMPTS = CATEGORY_PROMPTS["라이프"]
 
 
 def _build_url(prompt, seed):
@@ -109,7 +105,7 @@ def generate_images_for_article(category, topic, count=4):
         if not _verify_one(url):
             print(f"  [이미지 {i+1}] 생성 실패, 건너뜀")
             continue
-        alt = f"{topic} 관련 이미지 {i + 1}"
+        alt = f"{topic} / 사진=이든뉴스 자료사진"
         results.append((url, alt))
         time.sleep(1)  # 무료 서비스에 대한 매너 딜레이
     return results
