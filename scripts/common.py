@@ -106,28 +106,53 @@ def _image_tag(image_url, alt):
     )
 
 
+H2_OPEN_RE = re.compile(r"<h2\b[^>]*>")
+P_CLOSE_RE = re.compile(r"</p>")
+
+
 def insert_images_into_html(html, images):
-    """images: [(image_url, alt_text), ...]. <h2> 소제목 앞마다 이미지를 하나씩 배치하고,
-    남는 이미지는 첫 문단 뒤에 추가한다. 이미지가 없으면 원본 html을 그대로 반환한다."""
+    """images: [(image_url, alt_text), ...]. <h2> 소제목(속성이 붙어 있어도 매치)
+    앞마다 이미지를 하나씩 배치한다. 소제목 수보다 이미지가 많으면, 남는 이미지는
+    본문 뒷부분(마지막 소제목 이후)의 </p> 문단 경계에 고르게 분산 배치해서 한곳에
+    몰리지 않게 한다. 이미지가 없으면 원본 html을 그대로 반환한다."""
     if not images:
         return html
 
-    remaining = list(images)
+    images = list(images)
+    h2_starts = [m.start() for m in H2_OPEN_RE.finditer(html)]
 
-    def repl(_match):
-        if remaining:
-            image_url, alt = remaining.pop(0)
-            return _image_tag(image_url, alt) + "\n<h2>"
-        return "<h2>"
+    anchors = h2_starts[: len(images)]
 
-    html = re.sub(r"<h2>", repl, html)
+    need = len(images) - len(anchors)
+    if need > 0:
+        search_from = h2_starts[0] if h2_starts else 0
+        p_ends = [m.end() for m in P_CLOSE_RE.finditer(html) if m.end() > search_from]
+        if p_ends:
+            step = max(1, len(p_ends) // (need + 1))
+            idx = step - 1
+            while len(anchors) < len(images) and idx < len(p_ends):
+                pos = p_ends[idx]
+                if pos not in anchors:
+                    anchors.append(pos)
+                idx += step
+            # 그래도 자리가 부족하면 남은 문단 경계를 끝에서부터 채운다
+            for pos in reversed(p_ends):
+                if len(anchors) >= len(images):
+                    break
+                if pos not in anchors:
+                    anchors.append(pos)
 
-    if remaining:
-        leftover_html = "".join(_image_tag(url, alt) for url, alt in remaining)
-        new_html, count = re.subn(r"</p>", "</p>\n" + leftover_html, html, count=1)
-        html = new_html if count else html + leftover_html
+    pairs = list(zip(sorted(set(anchors)), images))
 
-    return html
+    result = html
+    for pos, (url, alt) in sorted(pairs, key=lambda item: -item[0]):
+        result = result[:pos] + _image_tag(url, alt) + "\n" + result[pos:]
+
+    if len(pairs) < len(images):
+        remaining_imgs = images[len(pairs):]
+        result += "".join(_image_tag(url, alt) for url, alt in remaining_imgs)
+
+    return result
 
 
 BYLINE_MARKER = 'class="kn-byline"'
