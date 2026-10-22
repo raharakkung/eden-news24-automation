@@ -2,7 +2,7 @@
   "site_name": "이든뉴스",
   "tagline": "지금 가장 화제가 되는 이야기",
   "editor_name": "이든뉴스 편집팀",
-  "posts_per_day": 20,
+  "posts_per_day": 5,
   "language": "ko",
   "model": "gemini-flash-lite-latest",
   "images_per_post": 4,
