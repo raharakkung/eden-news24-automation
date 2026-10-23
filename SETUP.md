@@ -92,6 +92,20 @@ git push -u origin main
 | `GOOGLE_CLIENT_SECRET` | STEP 3에서 받은 값 |
 | `GOOGLE_REFRESH_TOKEN` | STEP 3에서 받은 값 |
 | `BLOGGER_BLOG_ID` | STEP 4에서 확인한 숫자 |
+| `POLLINATIONS_API_KEY` | (선택) STEP 5-1에서 받은 키 |
+
+### STEP 5-1. (선택, 권장) Pollinations API 키 발급 — 사진 품질 개선
+
+안 해도 자동화는 정상 작동하지만, 안 하면 이미지가 저가형 모델(sana)로만 생성되어
+AI 티가 많이 나고 우측 하단에 "pollinations.ai" 워터마크가 찍힙니다.
+
+1. https://pollinations.ai 접속 → 우측 상단에서 계정 가입/로그인 (GitHub 계정으로
+   간편 가입 가능, 완전 무료)
+2. https://enter.pollinations.ai/keys 접속 → 새 Secret Key 생성
+3. 생성된 키(`sk_...`)를 복사해 두세요 (`POLLINATIONS_API_KEY`)
+
+이 키가 있으면 더 사실적인 "flux" 모델을 먼저 시도하고, 무료 할당량을 다 쓰면
+자동으로 기존 sana 모델로 전환됩니다(발행 자체가 실패하는 일은 없음).
 
 ## STEP 8. 필수 페이지 자동 생성 (소개/개인정보처리방침/문의)
 
